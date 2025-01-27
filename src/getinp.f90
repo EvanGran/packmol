@@ -454,7 +454,7 @@ subroutine getinp()
          ! Reading towhee input files (By Evan Gran)
          if(towhee) then
             open(10,file=keyword(iline,2),status='old',iostat=ioerr)
-            if ( ioerr /= 0 ) call failopen(towhee_Packmol)
+            if ( ioerr /= 0 ) call failopen(keyword(iline,2))
             read(10,*) natoms(itype)
             read(10,str_format) name(itype)
             if(name(itype).lt.' ') name(itype) = 'Without_title'
