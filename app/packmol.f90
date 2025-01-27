@@ -95,7 +95,7 @@ program packmol
 
   ! Reading input file
 
-  call getinp()
+  call getinp('towhee_Packmol')
 
   ! Put molecules in their center of mass
 
