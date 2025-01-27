@@ -451,7 +451,27 @@ subroutine getinp()
             end do
             close(10)
          end if
-
+         ! Reading towhee input files (By Evan Gran)
+         if(towhee) then
+            open(10,file=keyword(iline,2),status='old',iostat=ioerr)
+            if ( ioerr /= 0 ) call failopen(keyword(iline,2))
+            read(10,*) natoms(itype)
+            read(10,str_format) name(itype)
+            if(name(itype).lt.' ') name(itype) = 'Without_title'
+            idfirst(itype) = 1
+            do ii = itype - 1, 1, -1
+               idfirst(itype) = idfirst(itype) + natoms(ii)
+            end do
+            idatom = idfirst(itype) - 1
+            do iatom = 1, natoms(itype)
+               idatom = idatom + 1
+               record = blank
+               read(10,str_format) record
+               read(record,*) (coor(idatom,k),k=1,3), ele(idatom)
+               amass(idatom) = 1.d0
+            end do
+            close(10)
+         end if
          ! Reading xyz input files
 
          if(xyz) then
