@@ -38,6 +38,7 @@ subroutine output(n, x, output_file_name)
    character(len=8) :: crdires,crdresn,crdsegi,atmname
    character(len=strl) :: record
    character(len=strl) :: output_file_name
+   character(len=strl) :: towhee_coords
    character(len=5) :: i5hex, tmp_i5hex
 
    ! Job title
