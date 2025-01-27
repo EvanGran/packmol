@@ -94,7 +94,51 @@ subroutine output(n, x, output_file_name)
          ilugan = ilugan + nmols(itype)*3
       end if
    end do
-
+   ! output as towhee file (By Evan Gran
+   if(towhee) then
+      open(30,file=towhee_coords,status='unknown')
+      !write(30,*) ntotat
+      !write(30,*) title
+      ilubar = 0
+      ilugan = ntotmol*3
+      icart = 0
+      i_not_fixed = 0
+      i_fixed = ntype
+      do itype = 1, ntfix
+         if ( .not. fixedoninput(itype) ) then
+            i_not_fixed = i_not_fixed + 1
+            do imol = 1, nmols(i_not_fixed)
+               xbar = x(ilubar+1)
+               ybar = x(ilubar+2)
+               zbar = x(ilubar+3)
+               beta = x(ilugan+1)
+               gama = x(ilugan+2)
+               teta = x(ilugan+3)
+               call eulerrmat(beta,gama,teta,v1,v2,v3)
+               idatom = idfirst(i_not_fixed) - 1
+               do iatom = 1, natoms(i_not_fixed)
+                  icart = icart + 1
+                  idatom = idatom + 1
+                  call compcart(icart,xbar,ybar,zbar,&
+                     coor(idatom,1),coor(idatom,2),&
+                     coor(idatom,3),&
+                     v1,v2,v3)
+                  write(30,"( tr2,a3,3(tr2,f14.6),tr2 )") (xcart(icart, k), k = 1, 3), ele(idatom)
+               end do
+               ilugan = ilugan + 3
+               ilubar = ilubar + 3
+            end do
+         else
+            i_fixed = i_fixed + 1
+            idatom = idfirst(i_fixed) - 1
+            do iatom = 1, natoms(i_fixed)
+               idatom = idatom + 1
+               write(30,"( tr2,a3,3(tr2,f14.6),tr2 )") (coor(idatom,k),k=1,3), ele(idatom)
+            end do
+         end if
+      end do
+      close(30)
+   end if
    ! Write the output (xyz file)
 
    if(xyz) then
